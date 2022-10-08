@@ -148,24 +148,22 @@ Stats two_way_merge_sort(std::vector<int>& data)
     Stats stats;
     while (!is_sorted(data))
     {
-        std::vector<std::vector<int>> seq; // sequences array 
+        std::vector<int> copy_data = data;
 
         auto forward_start = data.begin();
         auto reverse_start = data.rbegin();
 
+        auto rvs = copy_data.rbegin();
+        auto fwd = copy_data.begin();
+
+        int i = 0;
         while (forward_start < reverse_start.base() - 1 && forward_start != data.end() && reverse_start != data.rend())
         {
             auto forward_end = get_seq(stats, forward_start + 1, data.end());
             auto reverse_end = get_seq(stats, reverse_start + 1, data.rend());
-            seq.push_back(merge_seq(stats, forward_start, forward_end, reverse_start, reverse_end));
-        }
-
-        auto fwd = data.begin();
-        auto rvs = data.rbegin();
-
-        for (size_t i = 0; i < seq.size(); i++)
-        {
-            for (auto iter = seq[i].begin(); iter < seq[i].end(); iter++)
+            std::vector<int> seq = merge_seq(stats, forward_start, forward_end, reverse_start, reverse_end);
+            
+            for (auto iter = seq.begin(); iter < seq.end(); iter++)
             {
                 if (i % 2 == 0)
                 {
@@ -179,7 +177,9 @@ Stats two_way_merge_sort(std::vector<int>& data)
                 }
                 stats.copy_count++;
             }
+            i++;
         }
+        swap(data, copy_data);
     }
     return stats;
 }

@@ -1,5 +1,6 @@
 #include "Sort.hpp"
 #include <conio.h>
+#include <cstdlib>
 
 int get_key()
 {
@@ -32,11 +33,15 @@ int main_menu()
 	}
 }
 
-int main()
+int main(int argc, char* argv[])
 {
+	int size = 100;
+	if (argc > 1)
+		size = atoi(argv[1]);
+
 	std::vector<int> data;
 	std::srand(unsigned(std::time(nullptr)));
-	for (int i = 0; i < 30; i++)
+	for (int i = 0; i < size; i++)
 		data.push_back(rand() % 20000 - 10000);
 	const std::vector<int> original = data;
 	
