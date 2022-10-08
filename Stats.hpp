@@ -2,6 +2,7 @@
 #ifndef STATS
 #define STATS
 #include <iostream>
+#include <iomanip>
 
 struct Stats
 {
@@ -10,8 +11,8 @@ struct Stats
 
 	void print()
 	{
-		std::cout << "Comparisons: " << comparison_count	<< std::endl;
-		std::cout << "     Copies: " << copy_count			<< std::endl;
+		std::cout << std::setw(11) << "COMPARISONS"		<< std::setw(15) << "COPIES"	<< std::endl;
+		std::cout << std::setw(11) << comparison_count	<< std::setw(15) << copy_count	<< std::endl;
 	}
 };
 #endif
