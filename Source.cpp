@@ -35,7 +35,7 @@ int main_menu()
 
 int main(int argc, char* argv[])
 {
-	int size = 500;
+	int size = 100;
 	if (argc > 1)
 		size = atoi(argv[1]);
 
