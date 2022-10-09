@@ -96,29 +96,23 @@ Iter get_seq(Stats& stats, Iter iter, const Iter& end)
     return iter;
 }
 
-std::vector<int> merge_seq(Stats& stats, iterator& a_begin, const iterator& a_end,
-    reverse_iterator& b_begin, const reverse_iterator& b_end)
+template <typename Iter>
+void merge_seq(Stats& stats, iterator& a_begin, const iterator& a_end,
+    reverse_iterator& b_begin, const reverse_iterator& b_end, Iter& iter)
 {
-    std::vector<int> seq;
     while (a_begin <= b_begin.base() - 1 && a_begin != a_end && b_begin != b_end)
     {
         if (*a_begin < *b_begin)
         {
-            seq.push_back(*a_begin);
+            *iter = *a_begin;
             a_begin++;
-        }
-        else if (*a_begin > *b_begin)
-        {
-            seq.push_back(*b_begin);
-            b_begin++;
         }
         else
         {
-            seq.push_back(*b_begin);
-            a_begin++;
+            *iter = *b_begin;
             b_begin++;
         }
-
+        iter++;
         stats.comparison_count++;
         stats.copy_count++;
     }
@@ -128,19 +122,20 @@ std::vector<int> merge_seq(Stats& stats, iterator& a_begin, const iterator& a_en
 
         while (a_begin != a_end)
         {
-            seq.push_back(*a_begin);
+            *iter = *a_begin;
+            iter++;
             a_begin++;
             stats.copy_count++;
         }
 
         while (b_begin != b_end)
         {
-            seq.push_back(*b_begin);
+            *iter = *b_begin;
+            iter++;
             b_begin++;
             stats.copy_count++;
         }
     }
-    return seq;
 }
 
 Stats two_way_merge_sort(std::vector<int>& data)
@@ -161,21 +156,14 @@ Stats two_way_merge_sort(std::vector<int>& data)
         {
             auto forward_end = get_seq(stats, forward_start + 1, data.end());
             auto reverse_end = get_seq(stats, reverse_start + 1, data.rend());
-            std::vector<int> seq = merge_seq(stats, forward_start, forward_end, reverse_start, reverse_end);
-            
-            for (auto iter = seq.begin(); iter < seq.end(); iter++)
+
+            if (i % 2 == 0)
             {
-                if (i % 2 == 0)
-                {
-                    *fwd = *iter;
-                    fwd++;
-                }
-                else
-                {
-                    *rvs = *iter;
-                    rvs++;
-                }
-                stats.copy_count++;
+                merge_seq(stats, forward_start, forward_end, reverse_start, reverse_end, fwd);
+            }
+            else
+            {
+                merge_seq(stats, forward_start, forward_end, reverse_start, reverse_end, rvs);
             }
             i++;
         }
